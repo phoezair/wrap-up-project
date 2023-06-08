@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/CountryApi/CountryApi.csproj",
+                "${workspaceFolder}/backend/CountryApi.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/CountryApi/CountryApi.csproj",
+                "${workspaceFolder}/backend/CountryApi.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/CountryApi/CountryApi.csproj"
+                "${workspaceFolder}/backend/CountryApi.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
