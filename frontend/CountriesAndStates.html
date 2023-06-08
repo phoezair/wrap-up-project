@@ -1,0 +1,160 @@
+<html>
+    <head>
+        <title>Countries and States</title>
+        <link rel="stylesheet" href="WebDesign.css">
+    </head>
+
+    <div class="CandS">
+        <h1>Countries and States</h1>
+    </div>
+
+    <!-- <style>
+        h1 {background-color: paleturquoise;}
+        h3 {
+            color-scheme: powderblue, pink;
+            color:cornflowerblue;
+            background-color: gainsboro;
+        }
+        body {
+            background-color: cadetblue;
+        }
+    </style> -->
+
+    <body onload="fetchCountryData()" onload="selectCountry()">
+        <div class="dropdown">
+            <h3>Please Select A Country</h3>
+            <select id="Country" onchange="fetchStateData(value)"><option></option></select><br><br>
+
+            <script>
+                function fetchCountryData() {
+                    (document.getElementById("Country")).innerHTML = '<option></option>';
+                    fetch(`https://localhost:7134/api/Countries`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.sort((country1, country2) => {
+                            country1 = country1.name.toLowerCase();
+                            country2 = country2.name.toLowerCase();
+
+                            if (country1 < country2) {
+                                return -1;
+                            }
+                            else if (country1 > country2) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        let countryDropdown = document.getElementById("Country");
+                        let selectCountryDropdown = document.getElementById("stateAddCountry");
+                        for (let item of data) {
+                            let name = item.name;
+                            let countryCode = item.code;
+                            let countryId = item.id;
+                            countryDropdown.append(new Option(name, countryCode));
+                            selectCountryDropdown.append(new Option(name, countryId));
+                        }
+                    });
+                }
+            </script>
+
+            <form id="CountryForm">
+                Add Country: <input type="text" id="addedCountryName"/><br>
+                Add Code: <input type="text" id="addedCountryCode"/><br>
+                <input type="button" value="Submit" onclick="addCountry()"/><br>
+            </form>
+
+            <script>
+                function addCountry() {
+                    console.log("entered addCountry()");
+                    fetch(`https://localhost:7134/api/Countries`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ 
+                            code: document.getElementById("addedCountryCode").value,
+                            name: document.getElementById("addedCountryName").value 
+                        })
+                    })
+                    .then((response) => {
+                        console.log("fetch successful");
+                        return response.json();
+                    })
+                    .then((json) => {
+                        fetchCountryData();
+                        return console.log(json);
+                    })
+                    .catch(error => console.error(error));
+                }
+            </script>
+            
+        </div>
+
+        <div>
+            <h3>Please Select A State</h3>
+            <select id="State"></select><br><br>
+                
+            <script>
+                function fetchStateData(countryCode) {
+                    (document.getElementById("State")).innerHTML = '<option></option>';
+                    fetch(`https://localhost:7134/api/Countries/${countryCode}/States`)
+                    .then(response => response.json())
+                    .then(stateData => {
+                        stateData.sort((state1, state2) => {
+                            state1 = state1.name.toLowerCase();
+                            state2 = state2.name.toLowerCase();
+
+                            if (state1 < state2) {
+                                return -1;
+                            }
+                            else if (state1 > state2) {
+                                return 1;
+                            }
+                            return 0;
+                        });
+                        let stateDropdown = document.getElementById("State");
+                        for (let item of stateData) {
+                            let name = item.name;
+                            let stateCode = item.code;
+                            stateDropdown.append(new Option(name, stateCode));
+                        }
+                    });
+                }
+            </script>
+
+            <form id="StateForm">
+                Add State: <input type="text" id="addedStateName"/><br>
+                Add Code: <input type="text" id="addedStateCode"/><br>
+                Select Country: <select id="stateAddCountry"><option></option></select><br>
+                <input type="button" value="Submit" onclick="addState()"/><br>
+            </form>
+
+            <script>
+                function addState() {
+                    console.log("entered addState()");
+                    fetch(`https://localhost:7134/api/States`, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({ 
+                            code: document.getElementById("addedStateCode").value,
+                            name: document.getElementById("addedStateName").value,
+                            countryId: document.getElementById("stateAddCountry").value,
+                        })
+                    })
+                    .then((response) => {
+                        console.log("fetch successful");
+                    })
+                    .then((json) => {
+                        
+                        return console.log(json);
+                    })
+                    .catch(error => console.error(error));
+                }
+            </script>
+        </div>
+    </body>
+</html>
+
